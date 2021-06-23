@@ -24,6 +24,7 @@ variable "cloud" {
 
 variable "tenant_id" {
   description = "Azure AD Tenant ID for the current deployment."
+  type        = string
   default     = null
 }
 
@@ -54,10 +55,12 @@ variable "environment" {
 
 variable "logged_user_objectId" {
   description = "Used to set access policies based on the value 'logged_in_user'. Can only be used in interactive execution with vscode."
+  type        = string
   default     = null
 }
 variable "logged_aad_app_objectId" {
   description = "Used to set access policies based on the value 'logged_in_aad_app'"
+  type        = string
   default     = null
 }
 
@@ -128,19 +131,7 @@ variable "user_type" {
 }
 
 ## Azure AD
-variable "azuread_apps" {
-  default = {}
-}
-
-variable "azuread_groups" {
-  default = {}
-}
-
-variable "azuread_roles" {
-  default = {}
-}
-
-variable "azuread_users" {
+variable "azuread" {
   default = {}
 }
 
@@ -304,3 +295,6 @@ variable "event_hub_consumer_groups" {
   default = {}
 }
 
+variable "random_strings" {
+  default = {}
+}
