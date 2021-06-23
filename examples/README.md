@@ -132,12 +132,12 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_dynamic_keyvault_secrets"></a> [dynamic\_keyvault\_secrets](#module\_dynamic\_keyvault\_secrets) | aztfmod/caf/azurerm//modules/security/dynamic_keyvault_secrets | ~>5.3.2 |
-| <a name="module_example"></a> [example](#module\_example) | ../.. | n/a |
-| <a name="module_vm_extension_diagnostics"></a> [vm\_extension\_diagnostics](#module\_vm\_extension\_diagnostics) | ../../modules/compute/virtual_machine_extensions | n/a |
-| <a name="module_vm_extension_microsoft_azure_domainjoin"></a> [vm\_extension\_microsoft\_azure\_domainjoin](#module\_vm\_extension\_microsoft\_azure\_domainjoin) | ../../modules/compute/virtual_machine_extensions | n/a |
-| <a name="module_vm_extension_monitoring_agent"></a> [vm\_extension\_monitoring\_agent](#module\_vm\_extension\_monitoring\_agent) | ../../modules/compute/virtual_machine_extensions | n/a |
-| <a name="module_vm_extension_session_host_dscextension"></a> [vm\_extension\_session\_host\_dscextension](#module\_vm\_extension\_session\_host\_dscextension) | ../../modules/compute/virtual_machine_extensions | n/a |
+| <a name="module_dynamic_keyvault_secrets"></a> [dynamic\_keyvault\_secrets](#module\_dynamic\_keyvault\_secrets) | ../modules/security/dynamic_keyvault_secrets | n/a |
+| <a name="module_example"></a> [example](#module\_example) | ../ | n/a |
+| <a name="module_vm_extension_diagnostics"></a> [vm\_extension\_diagnostics](#module\_vm\_extension\_diagnostics) | ../modules/compute/virtual_machine_extensions | n/a |
+| <a name="module_vm_extension_microsoft_azure_domainjoin"></a> [vm\_extension\_microsoft\_azure\_domainjoin](#module\_vm\_extension\_microsoft\_azure\_domainjoin) | ../modules/compute/virtual_machine_extensions | n/a |
+| <a name="module_vm_extension_monitoring_agent"></a> [vm\_extension\_monitoring\_agent](#module\_vm\_extension\_monitoring\_agent) | ../modules/compute/virtual_machine_extensions | n/a |
+| <a name="module_vm_extension_session_host_dscextension"></a> [vm\_extension\_session\_host\_dscextension](#module\_vm\_extension\_session\_host\_dscextension) | ../modules/compute/virtual_machine_extensions | n/a |
 
 ## Resources
 
