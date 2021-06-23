@@ -16,14 +16,46 @@ module "caf" {
 }
 ```
 
-Please refer to the instructions within each example directory, whenever you have a /standalone subdirectory.
+You can tailor the module to call the variables for the resource you want to create: 
 
+```hcl
+module "caf" {
+  source  = "aztfmod/caf/azurerm"
+  version = "5.3.11"
+
+  global_settings = var.global_settings
+  resource_groups = var.resource_groups
+  keyvaults       = var.keyvaults
+
+  compute = {
+    virtual_machines = var.virtual_machines
+  }
+
+  networking = {
+    public_ip_addresses = var.public_ip_addresses
+    vnets               = var.vnets
+  }
+}
+```
+
+Then, you declare the variables using the syntax you can find in examples folder.
+
+You can also use the example file in this directory to run ALL examples in the sub directories.
+
+```bash
+cd /tf/caf/aztfmod/examples
+az login
+terraform init
+terraform plan -var-file <path to variable files>
+terraform apply
+
+```
 
 ## Deploying examples with rover
 
 To get started with the deployment within rover, follow the steps:
 
-1. Log in the subscription with the rover
+### 1. Log in the subscription with the rover
 
 ```bash
 rover login
@@ -31,7 +63,7 @@ rover login
 rover login --tenant <tenant_name>.onmicrosoft.com -s <subscription_id>
 ```
 
-2. Deploy the basic launchpad
+### 2. Deploy the basic launchpad
 
 ```bash
 rover -lz /tf/caf/public/landingzones/caf_launchpad \
@@ -40,7 +72,7 @@ rover -lz /tf/caf/public/landingzones/caf_launchpad \
 -a apply
 ```
 
-3. Test your example
+### 3. Test your example
 
 ```bash
 rover -lz /tf/caf/landingzones/caf_example \

@@ -1,5 +1,5 @@
 module "example" {
-  source = "../.."
+  source = "../"
 
   current_landingzone_key               = var.landingzone.key
   custom_role_definitions               = var.custom_role_definitions
