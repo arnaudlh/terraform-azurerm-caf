@@ -14,6 +14,7 @@ on:
       - '_pictures/**'
       - 'README.md'
       - 'CHANGELOG.md'
+  push:
   schedule:
     - cron:  '0 2 * * 0' #1 AM on Sunday
 
@@ -27,33 +28,39 @@ env:
   ROVER_RUNNER: true
 
 jobs:
-  load_scenarios:
+  load_cases:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.load_scenarios.outputs.matrix }}
+      matrix: ${{ steps.load_cases.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
-      - id: load_scenarios
+      - id: load_cases
         run: |
           cases=$((
-            cat ./.github/workflows/standalone-scenarios.json) | jq -c .)
+            cat ./.github/workflows/master-100-testcases.json) | jq -c .)
+          echo $cases
           echo "::set-output name=matrix::${cases}"
-
+  
   examples:
     name: examples
     runs-on: ubuntu-latest
-    needs: load_scenarios
+    needs: load_cases
 
     strategy:
       fail-fast: false
-      matrix: ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
-
+      matrix: ${{fromJSON(needs.load_cases.outputs.matrix)}}
+          
     container:
       image: aztfmod/rover-preview:0.15.5-2106.181127
       options: --user 0
 
     steps:
       - uses: actions/checkout@v2
+      # - name: Show
+      #   run: |
+      #     matrix='${{ needs.load_cases.outputs.matrix }}'
+      #     echo $matrix
+      #     echo $matrix | jq .
 
       - name: Login azure
         run: |
@@ -71,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ failure() || cancelled() }}
 
-    needs: examples
+    needs: [examples, load_cases]
 
     container:
       image: aztfmod/rover-preview:0.15.5-2106.181127
