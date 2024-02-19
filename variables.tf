@@ -13,7 +13,8 @@ variable "global_settings" {
 }
 
 variable "client_config" {
-  default = {}
+  description = "Client configuration object."
+  default     = {}
 }
 
 ## Cloud variables
