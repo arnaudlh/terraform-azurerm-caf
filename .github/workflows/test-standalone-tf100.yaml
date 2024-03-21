@@ -26,7 +26,7 @@ env:
   TF_CLI_ARGS: "-no-color"
   TF_CLI_ARGS_destroy: "-auto-approve -refresh=false"
   ROVER_RUNNER: true
-  DEFAULT_SCENARIO: 'standalone-scenarios.json'
+  DEFAULT_SCENARIO: "standalone-scenarios.json"
 
 jobs:
   load_scenarios:
