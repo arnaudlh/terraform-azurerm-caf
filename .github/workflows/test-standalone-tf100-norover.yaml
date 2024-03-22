@@ -57,13 +57,14 @@ jobs:
         run: |
           terraform init
           OUTPUT=$(terraform fmt -check -diff -recursive || true)
+          OUTPUT=${OUTPUT//$'\n'/ }
           echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Run TFLint
         if: always()
         id: tflint
         run: |
-          OUTPUT=$(tflint || true)
+          OUTPUT=$(tflint -f compact || true)
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Comment the PR with results of TFLint
