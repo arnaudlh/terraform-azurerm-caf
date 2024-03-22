@@ -50,7 +50,7 @@ jobs:
       - name: Intialize toolset
         run: |
           tfenv --init
-          tflint --init
+          tflint init
 
       - name: Terraform Format
         id: fmt
