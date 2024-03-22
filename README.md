@@ -4,7 +4,7 @@
 
 This module allows you to create resources on Microsoft Azure, is used by the Azure Terraform SRE to provision resources in an Azure subscription and can deploy resources being directly invoked from the Terraform registry.
 
-## Prerequisites
+## Prerequisites 
 - Setup your **environment** using the following guide [Getting Started](https://github.com/aztfmod/caf-terraform-landingzones/blob/master/documentation/getting_started/getting_started.md) or you use it online with [GitHub Codespaces](https://github.com/features/codespaces).
 - Access to an **Azure subscription**.
 
