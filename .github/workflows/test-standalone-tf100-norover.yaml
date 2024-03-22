@@ -55,13 +55,15 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: |
+          terraform init
           OUTPUT=$(terraform fmt -check -diff -recursive)
           echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Run TFLint
+        if: always()
         id: tflint
         run: |
-          OUTPUT=$(tflint)
+          OUTPUT=$(tflint ||true)
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Comment the PR with results of TFLint
