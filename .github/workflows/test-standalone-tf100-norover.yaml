@@ -49,8 +49,8 @@ jobs:
 
       - name: Intialize toolset
         run: |
-          tfenv --init
-          tflint init
+          tfenv init
+          tflint --init
 
       - name: Terraform Format
         id: fmt
