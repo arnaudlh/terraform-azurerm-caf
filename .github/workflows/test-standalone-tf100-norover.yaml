@@ -23,9 +23,6 @@ on:
           - standalone-scenarios-longrunners.json
 
 env:
-  # TF_CLI_ARGS: "-no-color"
-  TF_CLI_ARGS_destroy: "-auto-approve -refresh=false"
-  ROVER_RUNNER: true
   DEFAULT_SCENARIO: "standalone-scenarios.json"
 
 jobs:
@@ -44,12 +41,12 @@ jobs:
 
       - name: Install TFenv
         uses: rhythmictech/actions-setup-tfenv@v0.1.2
-    
+
       - name: Install Terraform Linter
         uses: terraform-linters/setup-tflint@v4
         with:
           tflint_version: v0.50.3
-      
+
       - name: Intialize TFLint
         run: tflint --init
 
@@ -68,7 +65,7 @@ jobs:
       - name: Comment the PR with results of TFLint
         id: tflint_report
         uses: actions/github-script@v5
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }} && always()
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
