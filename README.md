@@ -16,7 +16,7 @@ This module can be used inside [:books: Azure Terraform Landing zones](https://a
 ```terraform
 module "caf" {
   source  = "aztfmod/caf/azurerm"
-  version = "~>5.7.0"
+  version = "~>5.7.10"
   # insert the 7 required variables here
 }
 ```
