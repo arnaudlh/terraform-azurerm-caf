@@ -47,19 +47,21 @@ jobs:
         with:
           tflint_version: v0.50.3
 
-      - name: Intialize TFLint
-        run: tflint --init
+      - name: Intialize toolset
+        run: |
+          tfenv --init
+          tflint --init
 
       - name: Terraform Format
         id: fmt
         run: |
-          OUTPUT=$(terraform fmt -check -diff -recursive || true)
+          OUTPUT=$(terraform fmt -check -diff -recursive)
           echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Run TFLint
         id: tflint
         run: |
-          OUTPUT=$(tflint || true)
+          OUTPUT=$(tflint)
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Comment the PR with results of TFLint
