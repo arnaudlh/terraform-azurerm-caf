@@ -12,6 +12,7 @@ This module allows you to create resources on Microsoft Azure, is used by the Az
 
 This module can be used inside [:books: Azure Terraform Landing zones](https://aztfmod.github.io/documentation/), or can be used as standalone, directly from the [Terraform registry](https://registry.terraform.io/modules/aztfmod/caf/azurerm/)
 
+
 ```terraform
 module "caf" {
   source  = "aztfmod/caf/azurerm"
