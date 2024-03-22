@@ -18,6 +18,7 @@ module "caf" {
   version = "~>5.7.10"
   # insert the 7 required variables here
 }
+
 ```
 
 Fill the variables as needed and documented, there is a [quick example here](https://github.com/aztfmod/terraform-azurerm-caf/tree/master/examples/standalone.md).
