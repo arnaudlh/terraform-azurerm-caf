@@ -56,20 +56,20 @@ jobs:
         id: fmt
         run: |
           terraform init
-          OUTPUT=$(terraform fmt -check -diff -recursive)
+          OUTPUT=$(terraform fmt -check -diff -recursive || true)
           echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Run TFLint
         if: always()
         id: tflint
         run: |
-          OUTPUT=$(tflint ||true)
+          OUTPUT=$(tflint || true)
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Comment the PR with results of TFLint
         id: tflint_report
         uses: actions/github-script@v5
-        if: ${{ github.event_name == 'pull_request' }} && always()
+        if: always()
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
