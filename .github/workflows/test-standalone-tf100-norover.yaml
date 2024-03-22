@@ -82,7 +82,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           script: |
-            const output = `${{ steps.tflint.outputs.tf-lint-output }}`
+            const output = `${{ steps.tflint.outputs.tf-lint-output }}`.replace(/`/g, "\\`");
             const issue_number = context.issue.number
             await github.rest.issues.createComment({
               ...context.repo,
