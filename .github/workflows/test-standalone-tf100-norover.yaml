@@ -65,6 +65,7 @@ jobs:
         id: tflint
         run: |
           OUTPUT=$(tflint -f compact || true)
+          OUTPUT=${OUTPUT//$'\n'/ } # Replace newline characters with spaces
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
       - name: Comment the PR with results of TFLint
@@ -77,8 +78,7 @@ jobs:
           script: |
             const output = `${{ steps.tflint.outputs.result }}`
             const issue_number = context.issue.number
-            const octokit = github.getOctokit(github.token)
-            await octokit.rest.issues.createComment({
+            await github.rest.issues.createComment({
               ...context.repo,
               issue_number,
               body: output
