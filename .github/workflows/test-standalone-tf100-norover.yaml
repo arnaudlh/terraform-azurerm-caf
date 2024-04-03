@@ -65,33 +65,17 @@ jobs:
           OUTPUT=${OUTPUT//$'\n'/ }
           echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
-      - name: Run TFLint
-        if: always()
-        id: tflint
-        run: |
-          OUTPUT=$(tflint -f compact || true)
-          OUTPUT=${OUTPUT//$'\n'/ } # Replace newline characters with spaces
-          echo "::warning::${OUTPUT}"
-          echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
-
-      - name: Comment the PR with results of TFLint
-        id: tflint_report
-        uses: actions/github-script@v7
-        if: always()
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+      - name: TFLint
+        uses: reviewdog/action-tflint@v1
         with:
-          script: |
-            const output = `${{ steps.tflint.outputs.tf-lint-output }}`.replace(/`/g, "\\`");
-            const issue_number = context.issue.number
-            await github.rest.issues.createComment({
-              ...context.repo,
-              issue_number,
-              body: output
-            })
+          github_token: ${{ secrets.github_token }}
+          reporter: github-pr-review # Optional. Change reporter
+          filter_mode: "nofilter" # Check everything
+          fail_on_error: "false" # Optional. Fail action if errors are found
+          tflint_rulesets: "azurerm" # Optional. Extra official rulesets to install
 
   load_scenarios:
-    name: Load scenarios
+    name: Load Test Scenarios Matrix
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.load_scenarios.outputs.matrix }}
