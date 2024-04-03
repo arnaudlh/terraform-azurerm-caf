@@ -175,7 +175,7 @@ jobs:
   terraform_plan:
     runs-on: ubuntu-latest
     name: Integration Tests Plan
-    needs: [load_scenarios, mock_plan_scenarios]
+    needs: load_scenarios
     
     strategy:
       fail-fast: false
