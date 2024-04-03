@@ -65,14 +65,30 @@ jobs:
           OUTPUT=${OUTPUT//$'\n'/ }
           echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
-      - name: TFLint
-        uses: reviewdog/action-tflint@v1.22.0
-        with:
-          github_token: ${{ secrets.github_token }}
-          reporter: github-pr-review # Optional. Change reporter
-          filter_mode: "nofilter" # Check everything
-          fail_on_error: "false" # Optional. Fail action if errors are found
-          tflint_rulesets: "azurerm" # Optional. Extra official rulesets to install
+      - name: Run TFLint
+        if: always()
+        id: tflint
+        run: |
+          OUTPUT=$(tflint -f compact || true)
+          OUTPUT=${OUTPUT//$'\n'/ } # Replace newline characters with spaces
+          echo "::warning::${OUTPUT}"
+          echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
+
+      # - name: Comment the PR with results of TFLint
+      #   id: tflint_report
+      #   uses: actions/github-script@v7
+      #   if: always()
+      #   env:
+      #     GITHUB_TOKEN: ${{ github.token }}
+      #   with:
+      #     script: |
+      #       const output = `${{ steps.tflint.outputs.tf-lint-output }}`.replace(/`/g, "\\`");
+      #       const issue_number = context.issue.number
+      #       await github.rest.issues.createComment({
+      #         ...context.repo,
+      #         issue_number,
+      #         body: output
+      #       })
 
   load_scenarios:
     name: Load Test Scenarios Matrix
@@ -152,3 +168,64 @@ jobs:
           ${{ env.PARAMETER_FILES }} \
           -verbose
 
+  terraform_plan:
+    runs-on: ubuntu-latest
+    needs: load_scenarios
+    permissions:
+      id-token: write # This is required for requesting the JWT
+    
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
+
+    environment:
+      name: 'integration'
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create environment variables
+        run: |
+          cd ${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }}
+          FILE_NAME=$(echo ${{ matrix.config_files }} | sed 's./..g' | xargs)
+          echo STATE_FILE=${TF_DATA_DIR}/tfstates/${FILE_NAME}.tfstate  >> $GITHUB_ENV
+          echo PLAN_FILE=${TF_DATA_DIR}/tfstates/${FILE_NAME}.plan >> $GITHUB_ENV
+          echo CURRENT_FOLDER=${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }} >> $GITHUB_ENV
+          echo PARAMETER_FILES=$(find ${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }} | grep .tfvars | sed 's/.*/-var-file=&/' | xargs) >> $GITHUB_ENV
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
+      - name: Configure Terraform plugin cache
+        run: |
+          echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
+          mkdir --parents "$HOME/.terraform.d/plugin-cache"
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init example
+        id: tf_init
+        run: |
+          terraform -chdir=${GITHUB_WORKSPACE}/examples \
+          init -upgrade=true | grep -P '^- (?=Downloading|Using|Finding|Installing)|^[^-]'
+  
+      - name: Terraform Plan example
+        id: tf_plan
+        run: |
+          terraform -chdir=${GITHUB_WORKSPACE}/examples \
+            plan \
+            ${{ env.PARAMETER_FILES }} \
+            -var tags='{testing_job_id='"${{ github.run_id }}"'}' \
+            -var var_folder_path=${{ env.CURRENT_FOLDER }} \
+            -refresh=true \
+            -input=false \
+            -state=${{ env.STATE_FILE }} \
+            -out=${{ env.PLAN_FILE }}
