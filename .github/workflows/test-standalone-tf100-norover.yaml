@@ -27,7 +27,7 @@ permissions:
   contents: read
 
 env:
-  DEFAULT_SCENARIO: "standalone-scenarios.json"
+  DEFAULT_SCENARIO: "standalone-networking.json"
 
 jobs:
 
