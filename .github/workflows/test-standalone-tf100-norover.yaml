@@ -207,10 +207,8 @@ jobs:
           echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
           mkdir --parents "$HOME/.terraform.d/plugin-cache"
 
-      - name: Show cli version
-        uses: azure/cli@v2
-        with:
-          inlineScript: az version
+      - name: Create tfstates directory
+        run: mkdir -p $HOME/tfstates
 
       - name: Azure Login
         uses: azure/login@v2
@@ -219,16 +217,11 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
       
-      - name: Install Az Cli
-        uses: azure/cli@v2
-        with:
-          inlineScript: az account show 
-
       - name: Terraform Init example
         id: tf_init
         run: |
           terraform -chdir=${GITHUB_WORKSPACE}/examples \
-          init -upgrade=true | grep -P '^- (?=Downloading|Using|Finding|Installing)|^[^-]'
+          init | grep -P '^- (?=Downloading|Using|Finding|Installing)|^[^-]'
   
       - name: Terraform Plan example
         id: tf_plan
