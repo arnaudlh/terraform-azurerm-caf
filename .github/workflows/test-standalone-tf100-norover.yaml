@@ -189,9 +189,15 @@ jobs:
           echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
           mkdir --parents "$HOME/.terraform.d/plugin-cache"
 
-      - name: Create tfstates directory
-        run: mkdir -p $HOME/tfstates
-
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.terraform.d/plugin-cache
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: |
+            ${{ runner.os }}-terraform-
+  
       - name: Azure Login
         uses: azure/login@v2
         with:
