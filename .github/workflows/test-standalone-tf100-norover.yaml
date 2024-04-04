@@ -127,8 +127,8 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }}
           FILE_NAME=$(echo ${{ matrix.config_files }} | sed 's./..g' | xargs)
-          echo STATE_FILE=${TF_DATA_DIR}/tfstates/${FILE_NAME}.tfstate  >> $GITHUB_ENV
-          echo PLAN_FILE=${TF_DATA_DIR}/tfstates/${FILE_NAME}.plan >> $GITHUB_ENV
+          echo STATE_FILE=${HOME}/tfstates/${FILE_NAME}.tfstate  >> $GITHUB_ENV
+          echo PLAN_FILE=${HOME}/tfstates/${FILE_NAME}.plan >> $GITHUB_ENV
           echo CURRENT_FOLDER=${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }} >> $GITHUB_ENV
           echo PARAMETER_FILES=$(find ${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }} | grep .tfvars | sed 's/.*/-var-file=&/' | xargs) >> $GITHUB_ENV
 
@@ -192,8 +192,8 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }}
           FILE_NAME=$(echo ${{ matrix.config_files }} | sed 's./..g' | xargs)
-          echo STATE_FILE=${TF_DATA_DIR}/tfstates/${FILE_NAME}.tfstate  >> $GITHUB_ENV
-          echo PLAN_FILE=${TF_DATA_DIR}/tfstates/${FILE_NAME}.plan >> $GITHUB_ENV
+          echo STATE_FILE=${HOME}/tfstates/${FILE_NAME}.tfstate  >> $GITHUB_ENV
+          echo PLAN_FILE=${HOME}/tfstates/${FILE_NAME}.plan >> $GITHUB_ENV
           echo CURRENT_FOLDER=${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }} >> $GITHUB_ENV
           echo PARAMETER_FILES=$(find ${GITHUB_WORKSPACE}/examples/${{ matrix.config_files }} | grep .tfvars | sed 's/.*/-var-file=&/' | xargs) >> $GITHUB_ENV
 
