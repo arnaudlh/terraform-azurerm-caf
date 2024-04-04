@@ -28,6 +28,8 @@ permissions:
 
 env:
   DEFAULT_SCENARIO: "standalone-networking.json"
+  TF_VERSION: "1.7.5"
+  TF_LINT_VERSION: "v0.50.3"
 
 jobs:
 
@@ -43,23 +45,19 @@ jobs:
         with:
           node-version: '20.x'
 
-      # - name: Install TFenv
-      #   uses: rhythmictech/actions-setup-tfenv@v0.1.2
-
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5
+          terraform_version:  ${{ env.TF_VERSION }}
 
 
       - name: Install Terraform Linter
         uses: terraform-linters/setup-tflint@v4
         with:
-          tflint_version: v0.50.3
+          tflint_version: ${{ env.TF_LINT_VERSION }}
 
       - name: Intialize toolset
         run: |
-          # tfenv init
           tflint --init
 
       - name: Terraform Format
@@ -77,22 +75,6 @@ jobs:
           OUTPUT=${OUTPUT//$'\n'/ } # Replace newline characters with spaces
           echo "::warning::${OUTPUT}"
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
-
-      # - name: Comment the PR with results of TFLint
-      #   id: tflint_report
-      #   uses: actions/github-script@v7
-      #   if: always()
-      #   env:
-      #     GITHUB_TOKEN: ${{ github.token }}
-      #   with:
-      #     script: |
-      #       const output = `${{ steps.tflint.outputs.tf-lint-output }}`.replace(/`/g, "\\`");
-      #       const issue_number = context.issue.number
-      #       await github.rest.issues.createComment({
-      #         ...context.repo,
-      #         issue_number,
-      #         body: output
-      #       })
 
   load_scenarios:
     name: Load Test Scenarios Matrix
@@ -140,7 +122,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5
+          terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure Terraform plugin cache
         run: |
@@ -157,7 +139,6 @@ jobs:
             ${{ runner.os }}-terraform-
 
       - name: Terraform Init example
-        # if: steps.cache.outputs.cache-hit != 'true'
         id: tf_init
         run: |
           terraform -chdir=examples \
@@ -172,18 +153,19 @@ jobs:
           ${{ env.PARAMETER_FILES }} \
           -verbose
 
-  terraform_plan:
+  terraform_integration_tests:
     runs-on: ubuntu-latest
-    name: Integration Tests Plan
-    needs: load_scenarios
-    
+    name: Integration Tests
+    if: always()
+    needs: [load_scenarios, mock_plan_scenarios]
+
     strategy:
       fail-fast: false
       matrix: ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
 
     environment:
       name: 'integration'
-      
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -200,7 +182,7 @@ jobs:
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.7.5
+          terraform_version: ${{ env.TF_VERSION }}
 
       - name: Configure Terraform plugin cache
         run: |
@@ -216,13 +198,13 @@ jobs:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-      
+
       - name: Terraform Init example
         id: tf_init
         run: |
           terraform -chdir=${GITHUB_WORKSPACE}/examples \
           init | grep -P '^- (?=Downloading|Using|Finding|Installing)|^[^-]'
-  
+
       - name: Terraform Plan example
         id: tf_plan
         run: |
@@ -235,3 +217,65 @@ jobs:
             -input=false \
             -state=${{ env.STATE_FILE }} \
             -out=${{ env.PLAN_FILE }}
+
+      - name: Terraform Apply example
+        id: tf_apply
+        run: |
+          terraform -chdir=${GITHUB_WORKSPACE}/examples \
+            apply \
+            -auto-approve \
+            ${{ env.PLAN_FILE }} \
+            -state=${{ env.STATE_FILE }}
+
+      - name: Terraform Destroy Plan
+        id: tf_destroy_plan
+        run: |
+          terraform -chdir=${GITHUB_WORKSPACE}/examples \
+            plan \
+            ${{ env.PARAMETER_FILES }} \
+            -var tags='{testing_job_id='"${{ github.run_id }}"'}' \
+            -var var_folder_path=${{ env.CURRENT_FOLDER }} \
+            -refresh=true \
+            -input=false \
+            -destroy \
+            -state=${{ env.STATE_FILE }} \
+            -out=${{ env.PLAN_FILE }}-destroy
+
+      - name: Terraform Destroy Apply
+        id: tf_destroy_apply
+        run: |
+          terraform -chdir=${GITHUB_WORKSPACE}/examples \
+            apply \
+            -refresh=false \
+            -auto-approve \
+            -state=${{ env.STATE_FILE }} \
+            ${{ env.PLAN_FILE }}-destroy
+
+  purge:
+    name: Purge Integration Environment
+    runs-on: ubuntu-latest
+    if: ${{ failure() || cancelled() }}
+
+    needs: [load_scenarios, terraform_integration_tests]
+
+    environment:
+      name: 'integration'
+
+    steps:
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Purge based on run_id
+        run: |
+          for i in `az monitor diagnostic-settings subscription list -o tsv --query "value[?contains(name, '${{ github.run_id }}' )].name"`; do echo "purging subscription diagnostic-settings: $i" && $(az monitor diagnostic-settings subscription delete --name $i --yes); done
+          for i in `az monitor log-profiles list -o tsv --query '[].name'`; do az monitor log-profiles delete --name $i; done
+          for i in `az ad group list --query "[?contains(displayName, '${{ github.run_id }}')].id" -o tsv`; do echo "purging Azure AD group: $i" && $(az ad group delete --verbose --group $i || true); done
+          for i in `az ad app list --query "[?contains(displayName, '${{ github.run_id }}')].appId" -o tsv`; do echo "purging Azure AD app: $i" && $(az ad app delete --verbose --id $i || true); done
+          for i in `az keyvault list-deleted --query "[?tags.testing_job_id=='${{ github.run_id }}'].name" -o tsv`; do az keyvault purge --name $i; done
+          for i in `az group list --query "[?tags.testing_job_id=='${{ github.run_id }}'].name" -o tsv`; do echo "purging resource group: $i" && $(az group delete -n $i -y --no-wait || true); done
+          for i in `az role assignment list --query "[?contains(roleDefinitionName, '${{ github.run_id }}')].roleDefinitionName" -o tsv`; do echo "purging role assignment: $i" && $(az role assignment delete --role $i || true); done
+          for i in `az role definition list --query "[?contains(roleName, '${{ github.run_id }}')].roleName" -o tsv`; do echo "purging custom role definition: $i" && $(az role definition delete --name $i || true); done
