@@ -223,9 +223,8 @@ jobs:
         run: |
           terraform -chdir=${GITHUB_WORKSPACE}/examples \
             apply \
-            -auto-approve \
-            ${{ env.PLAN_FILE }} \
-            -state=${{ env.STATE_FILE }}
+            -state=${{ env.STATE_FILE }} \
+            ${{ env.PLAN_FILE }}
 
       - name: Terraform Destroy Plan
         id: tf_destroy_plan
