@@ -77,7 +77,11 @@ jobs:
       - uses: actions/checkout@v4
       - id: load_scenarios
         run: |
-          cases=$(cat ./.github/workflows/${{ github.event.inputs.scenario }} | jq -c .)
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            cases=$(cat ./.github/workflows/${{ github.event.inputs.scenario }} | jq -c .)
+          else
+            cases=$(cat ./.github/workflows/${{ github.event.client_payload.scenario }} | jq -c .)
+          fi
           echo "matrix=${cases}" >> $GITHUB_OUTPUT
 
   mock_plan_scenarios:
