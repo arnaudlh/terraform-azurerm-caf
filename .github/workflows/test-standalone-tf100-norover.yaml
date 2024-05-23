@@ -32,42 +32,6 @@ env:
   TF_LINT_VERSION: "v0.50.3"
 
 jobs:
-
-  linting:
-    name: Format and Lint Checks
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version:  ${{ env.TF_VERSION }}
-
-
-      - name: Install Terraform Linter
-        uses: terraform-linters/setup-tflint@v4
-        with:
-          tflint_version: ${{ env.TF_LINT_VERSION }}
-
-      - name: Intialize toolset
-        run: |
-          tflint --init
-
-      - name: Run TFLint
-        id: tflint
-        run: |
-          OUTPUT=$(tflint -f compact || true)
-          OUTPUT=${OUTPUT//$'\n'/ } # Replace newline characters with spaces
-          echo "::warning::${OUTPUT}"
-          echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
-
   load_scenarios:
     name: Load Test Scenarios Matrix
     runs-on: ubuntu-latest
@@ -77,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: load_scenarios
         run: |
-          echo ${{ github.event.client_payload.scenario }}
+          echo "Scenario: ${{ github.event.client_payload.scenario }}"
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             cases=$(cat ./.github/workflows/${{ github.event.inputs.scenario }} | jq -c .)
           else
