@@ -1,7 +1,7 @@
 #
 # Copyright (c) Microsoft Corporation
-# Licensed under the MIT License
-# 
+# Licensed under the MIT License.
+#
 
 name: PR Dispatch Workflow
 
@@ -14,7 +14,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        scenario: ["standalone-scenarios-azuread.json", "standalone-scenarios.json", "standalone-compute.json", "standalone-networking.json", "standalone-scenarios-longrunners.json"]
+        scenario: 
+          - standalone-scenarios-azuread.json
+          - standalone-scenarios.json
+          - standalone-compute.json
+          - standalone-networking.json
+          - standalone-scenarios-longrunners.json
 
     steps:
       - name: Repository Dispatch
@@ -22,4 +27,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: run-scenarios
-          client-payload: '{"scenario": "${{ matrix.scenario }}"}'
+          client-payload: '{"scenario": "${{ (matrix.scenario) }}"}'
