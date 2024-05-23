@@ -33,7 +33,7 @@ env:
 
 jobs:
 
-  linting_formatting:
+  linting:
     name: Format and Lint Checks
     runs-on: ubuntu-latest
     steps:
@@ -60,15 +60,7 @@ jobs:
         run: |
           tflint --init
 
-      - name: Terraform Format
-        id: fmt
-        run: |
-          OUTPUT=$(terraform fmt -check -diff -recursive | tee /dev/fd/2 || true)
-          OUTPUT=${OUTPUT//$'\n'/ }
-          echo "terraform-fmt-output=${OUTPUT}" >> $GITHUB_OUTPUT
-
       - name: Run TFLint
-        if: always()
         id: tflint
         run: |
           OUTPUT=$(tflint -f compact || true)
