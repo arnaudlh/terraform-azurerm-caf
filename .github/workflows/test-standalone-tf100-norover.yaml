@@ -6,8 +6,8 @@
 name: test-mock-standalone-norover
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened]
+  repository_dispatch:
+    types: [run-scenarios]
   workflow_dispatch:
     inputs:
       scenario:
@@ -77,11 +77,7 @@ jobs:
       - uses: actions/checkout@v4
       - id: load_scenarios
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            cases=$(cat ./.github/workflows/${{ env.DEFAULT_SCENARIO }} | jq -c .)
-          else
-            cases=$(cat ./.github/workflows/${{ github.event.inputs.scenario }} | jq -c .)
-          fi
+          cases=$(cat ./.github/workflows/${{ github.event.inputs.scenario }} | jq -c .)
           echo "matrix=${cases}" >> $GITHUB_OUTPUT
 
   mock_plan_scenarios:
