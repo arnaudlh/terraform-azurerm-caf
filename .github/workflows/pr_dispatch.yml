@@ -41,7 +41,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
-          level: warning
+          level: info
           tflint_init: true
 
   dispatch:
@@ -60,5 +60,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          event-type: run-scenarios
+          event-type: pr-${{ matrix.scenario }}
           client-payload: '{"scenario": "${{ (matrix.scenario) }}", "sha": "${{ github.event.pull_request.head.sha }}"}'
