@@ -7,7 +7,7 @@ name: test-mock-standalone-norover
 
 on:
   repository_dispatch:
-    types: [run-scenarios]
+    types: [pr-*]
   workflow_dispatch:
     inputs:
       scenario:
