@@ -34,13 +34,13 @@ jobs:
         uses: terraform-linters/setup-tflint@v4
         with:
           tflint_version: ${{ env.TF_LINT_VERSION }}
-          
+
         
       - name: Run TFLint with reviewdog
         uses: reviewdog/action-tflint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-review
+          reporter: github-pr-check
           level: warning
           tflint_init: true
 
