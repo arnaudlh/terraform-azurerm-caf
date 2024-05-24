@@ -103,7 +103,7 @@ jobs:
         id: tf_init
         run: |
           terraform -chdir=examples \
-          init
+          init -upgrade
 
       - name: Terraform Test example
         id: tf_test
@@ -172,7 +172,7 @@ jobs:
         id: tf_init
         run: |
           terraform -chdir=${GITHUB_WORKSPACE}/examples \
-          init | grep -P '^- (?=Downloading|Using|Finding|Installing)|^[^-]'
+          init -upgrade | grep -P '^- (?=Downloading|Using|Finding|Installing)|^[^-]'
 
       - name: Terraform Plan example
         id: tf_plan
