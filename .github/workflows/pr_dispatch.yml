@@ -47,6 +47,21 @@ jobs:
           echo "::warning::${OUTPUT}"
           echo "tf-lint-output=${OUTPUT}" >> $GITHUB_OUTPUT
 
+      - name: Comment PR
+        uses: actions/github-script@v5
+        env:
+          OUTPUT: ${{ steps.tflint.outputs.tf-lint-output }}
+        with:
+          script: |
+            const output = process.env.OUTPUT
+            const issueNumber = context.issue.number
+            const repo = context.repo
+            github.rest.issues.createComment({
+              ...repo,
+              issue_number: issueNumber,
+              body: `## TFLint Output\n\n${output}`
+            })
+
   dispatch:
     runs-on: ubuntu-latest
     strategy:
