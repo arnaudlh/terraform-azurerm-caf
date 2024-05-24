@@ -40,7 +40,7 @@ jobs:
         uses: reviewdog/action-tflint@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          reporter: github-pr-check
+          reporter: github-pr-review
           level: info
           tflint_init: true
 
