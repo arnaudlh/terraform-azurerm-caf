@@ -39,7 +39,6 @@ jobs:
       - name: Run TFLint with reviewdog
         uses: reviewdog/action-tflint@v1
         with:
-          flags: "--no-color"
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
           level: info
