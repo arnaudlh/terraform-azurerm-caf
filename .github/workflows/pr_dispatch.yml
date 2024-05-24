@@ -64,4 +64,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: run-scenarios
-          client-payload: '{"scenario": "${{ (matrix.scenario) }}"}'
+          client-payload: '{"scenario": "${{ (matrix.scenario) }}", "sha": "${{ github.event.pull_request.head.sha }}"}'
