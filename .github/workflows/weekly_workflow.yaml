@@ -16,11 +16,11 @@ on:
         type: choice
         default: "standalone-networking.json"
         options:
-          - standalone-scenarios-azuread.json
+          - standalone-azuread.json
           - standalone-scenarios.json
           - standalone-compute.json
           - standalone-networking.json
-          - standalone-scenarios-longrunners.json
+          - standalone-dataplat.json
 
 env:
   DEFAULT_SCENARIO: "standalone-networking.json"
