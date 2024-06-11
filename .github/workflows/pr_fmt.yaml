@@ -30,7 +30,6 @@ jobs:
         run: |
           terraform fmt -check -recursive
           echo "fmt_outcome=$?" >> $GITHUB_ENV
-        continue-on-error: true
 
       - name: Post PR comment on fmt failure
         if: ${{ steps.fmt_check.outcome == 'failure' }}
