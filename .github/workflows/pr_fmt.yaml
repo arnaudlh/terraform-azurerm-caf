@@ -1,50 +1,41 @@
-#
-# Copyright (c) Microsoft Corporation
-# Licensed under the MIT License.
-#
-
-name: PR fmt
-
-on:
-  pull_request:
-    types: [opened, synchronize, reopened]
-
-env:
-  TF_VERSION: "1.8.4"
-
 jobs:
   fmt_check:
-    name: Format Checks
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Install Terraform
-        uses: hashicorp/setup-terraform@v3
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
         with:
-          terraform_version:  ${{ env.TF_VERSION }}
+          terraform_version: latest
 
-      - name: Check terraform formatting
-        id: fmt_check
+      - name: Check Terraform formatting
+        id: fmt
         run: |
-          terraform fmt -check -recursive
-          echo "fmt_outcome=$?" >> $GITHUB_ENV
+          FMT_OUTPUT=$(terraform fmt -check -recursive)
+          echo "::set-output name=fmt_output::${FMT_OUTPUT}"
+          if [ -n "$FMT_OUTPUT" ]; then
+            echo "Formatting issues found in the following files:"
+            echo "$FMT_OUTPUT"
+            exit 1
+          fi
 
       - name: Post PR comment on fmt failure
-        if: ${{ steps.fmt_check.outcome == 'failure' }}
-        uses: actions/github-script@v7
+        if: failure() && steps.fmt.outcome == 'failure'
+        uses: actions/github-script@v5
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
+            const fmtOutput = `${{ steps.fmt.outputs.fmt_output }}`;
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
-            const body = "Please run `terraform fmt` to format your Terraform files according to the standard conventions.";
+            let body = `Please run \`terraform fmt\` to format your Terraform files according to the standard conventions. The following files need formatting:\n\`\`\`\n${fmtOutput}\n\`\`\``;
             github.rest.pulls.createReview({
               owner,
               repo,
               pull_number: issue_number,
+              body,
               event: "COMMENT",
-              body
             });
