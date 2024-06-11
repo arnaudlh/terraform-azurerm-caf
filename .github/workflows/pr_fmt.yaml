@@ -1,3 +1,17 @@
+#
+# Copyright (c) Microsoft Corporation
+# Licensed under the MIT License.
+#
+
+name: PR Fmt
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  TF_VERSION: "1.8.4"
+
 jobs:
   fmt_check:
     runs-on: ubuntu-latest
