@@ -14,13 +14,14 @@ env:
 
 jobs:
   fmt_check:
+    name: Terraform formatting Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
+        uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: latest
 
@@ -37,7 +38,7 @@ jobs:
 
       - name: Post PR comment on fmt failure
         if: failure() && steps.fmt.outcome == 'failure'
-        uses: actions/github-script@v5
+        uses: actions/github-script@v7
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |

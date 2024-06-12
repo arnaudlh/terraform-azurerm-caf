@@ -16,7 +16,7 @@ env:
 
 jobs:
   linting:
-    name: Format and Lint Checks
+    name: Terraform Lint Checks
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
