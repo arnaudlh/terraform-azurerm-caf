@@ -28,7 +28,7 @@ jobs:
       - name: Check Terraform formatting
         id: fmt
         run: |
-          FMT_OUTPUT=$(terraform fmt -check -recursive)
+          FMT_OUTPUT=$(terraform fmt -check -recursive | base64)
           echo "fmt_output=${FMT_OUTPUT}" >> $GITHUB_OUTPUT
           if [ -n "$FMT_OUTPUT" ]; then
             echo "Formatting issues found in the following files:"
@@ -42,7 +42,8 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const fmtOutput = `${{ steps.fmt.outputs.fmt_output }}`.replace(/\\n/g, '\n');
+            const base64FmtOutput = `${{ steps.fmt.outputs.fmt_output }}`;
+            const fmtOutput = Buffer.from(base64FmtOutput, 'base64').toString('utf-8');
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
