@@ -42,7 +42,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            const fmtOutput = `${{ steps.fmt.outputs.fmt_output }}`;
+            const fmtOutput = `${{ steps.fmt.outputs.fmt_output }}`.replace(/\\n/g, '\n');
             const issue_number = context.issue.number;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
