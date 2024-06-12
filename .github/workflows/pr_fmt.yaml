@@ -28,8 +28,8 @@ jobs:
       - name: Check Terraform formatting
         id: fmt
         run: |
-          FMT_OUTPUT=$(terraform fmt -check -recursive)
-          echo "fmt_output=$(echo "$FMT_OUTPUT" | base64)" >> $GITHUB_OUTPUT
+          FMT_OUTPUT=$(terraform fmt -check -recursive | base64)
+          echo "fmt_output=${FMT_OUTPUT}" >> $GITHUB_OUTPUT
           if [ -n "$FMT_OUTPUT" ]; then
             echo "Formatting issues found in the following files:"
             echo "$FMT_OUTPUT"
@@ -44,14 +44,11 @@ jobs:
           script: |
             const base64FmtOutput = `${{ steps.fmt.outputs.fmt_output }}`;
             const fmtOutput = Buffer.from(base64FmtOutput, 'base64').toString('utf-8');
-            const issue_number = context.issue.number;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-            let body = `Please run \`terraform fmt\` to format your Terraform files according to the standard conventions. The following files need formatting:\n\`\`\`\n${fmtOutput}\n\`\`\``;
+            const body = `Please run \`terraform fmt\` to format your Terraform files. The following files need formatting:\n\`\`\`\n${fmtOutput}\n\`\`\``;
             github.rest.pulls.createReview({
-              owner,
-              repo,
-              pull_number: issue_number,
-              body,
-              event: "COMMENT",
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+              body: body,
+              event: 'COMMENT',
             });
