@@ -42,7 +42,7 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            fmt_output_decoded=$(echo -n "${{ steps.previous_step.outputs.fmt_output }}" | base64 --decode)
+            fmt_output_decoded=$(echo -n "${{ steps.fmt.outputs.fmt_output }}" | base64 --decode)
             const body = `Please run \`terraform fmt\` to format your Terraform files. The following files need formatting:\n\`\`\`\n${fmt_output_decoded}\n\`\`\``;
             github.rest.pulls.createReview({
               owner: context.repo.owner,
