@@ -29,7 +29,7 @@ jobs:
         id: fmt
         run: |
           FMT_OUTPUT=$(terraform fmt -check -recursive)
-          echo "::set-output name=fmt_output::${FMT_OUTPUT}"
+          echo "fmt_output=${FMT_OUTPUT}" >> $GITHUB_OUTPUT
           if [ -n "$FMT_OUTPUT" ]; then
             echo "Formatting issues found in the following files:"
             echo "$FMT_OUTPUT"
