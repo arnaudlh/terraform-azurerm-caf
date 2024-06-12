@@ -28,8 +28,8 @@ jobs:
       - name: Check Terraform formatting
         id: fmt
         run: |
-          FMT_OUTPUT=$(terraform fmt -check -recursive | base64)
-          echo "fmt_output=${FMT_OUTPUT}" >> $GITHUB_OUTPUT
+          FMT_OUTPUT=$(terraform fmt -check -recursive)
+          echo "fmt_output=$(echo "$FMT_OUTPUT" | base64)" >> $GITHUB_OUTPUT
           if [ -n "$FMT_OUTPUT" ]; then
             echo "Formatting issues found in the following files:"
             echo "$FMT_OUTPUT"
