@@ -28,7 +28,7 @@ jobs:
       - name: Check Terraform formatting
         id: fmt
         run: |
-          FMT_OUTPUT=$(terraform fmt -check -recursive | base64)
+          FMT_OUTPUT=$(terraform fmt -check -recursive)
           echo "fmt_output=${FMT_OUTPUT}" >> $GITHUB_OUTPUT
           if [ -n "$FMT_OUTPUT" ]; then
             echo "Formatting issues found in the following files:"
@@ -42,8 +42,8 @@ jobs:
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
-            fmt_output_decoded=$(echo -n "${{ steps.fmt.outputs.fmt_output }}" | base64 --decode)
-            const body = `Please run \`terraform fmt\` to format your Terraform files. The following files need formatting:\n\`\`\`\n${fmt_output_decoded}\n\`\`\``;
+            const fmtOutput = "${{ steps.fmt.outputs.fmt_output }}";
+            const body = `Please run \`terraform fmt\` to format your Terraform files. The following files need formatting:\n\`\`\`\n${fmtOutput}\n\`\`\``;
             github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
