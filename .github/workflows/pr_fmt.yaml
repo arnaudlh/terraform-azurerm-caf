@@ -38,7 +38,7 @@ jobs:
             echo "No formatting issues found."
           fi
 
-      - name: Post PR review on FMT failure
+      - name: Post PR comment on FMT failure
         if: failure() && steps.fmt.outcome == 'failure'
         uses: actions/github-script@v7
         with:
@@ -46,10 +46,9 @@ jobs:
           script: |
             const fmtOutput = "${{ steps.fmt.outputs.fmt_output }}";
             const body = `Please run \`terraform fmt\` to format your Terraform files.`;
-            github.rest.pulls.createReview({
+            github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: context.issue.number,
+              issue_number: context.issue.number,
               body: body,
-              event: 'REQUEST_CHANGES',
             });
