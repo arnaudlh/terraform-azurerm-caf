@@ -34,9 +34,11 @@ jobs:
             echo "Formatting issues found in the following files:"
             echo "$FMT_OUTPUT"
             exit 1
+          else
+            echo "No formatting issues found."
           fi
 
-      - name: Post PR comment on fmt failure
+      - name: Post PR review on FMT failure
         if: failure() && steps.fmt.outcome == 'failure'
         uses: actions/github-script@v7
         with:
@@ -49,5 +51,5 @@ jobs:
               repo: context.repo.repo,
               pull_number: context.issue.number,
               body: body,
-              event: 'COMMENT',
+              event: 'REQUEST_CHANGES',
             });
