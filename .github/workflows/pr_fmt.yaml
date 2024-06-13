@@ -45,7 +45,7 @@ jobs:
           github-token: ${{secrets.GITHUB_TOKEN}}
           script: |
             const fmtOutput = "${{ steps.fmt.outputs.fmt_output }}";
-            const body = `Please run \`terraform fmt\` to format your Terraform files. The following files need formatting:\n\`\`\`\n${fmtOutput}\n\`\`\``;
+            const body = `Please run \`terraform fmt\` to format your Terraform files.`;
             github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
