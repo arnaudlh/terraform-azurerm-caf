@@ -329,7 +329,7 @@ resource "azurerm_kubernetes_cluster" "aks" {
       outbound_type       = try(network_profile.value.outbound_type, null)
       pod_cidr            = try(network_profile.value.pod_cidr, null)
       service_cidr        = try(network_profile.value.service_cidr, null)
-      service_cidrs       = try(network_profile.value.network_cidrs, null)
+      service_cidrs       = try(network_profile.value.service_cidrs, null)
       load_balancer_sku   = try(network_profile.value.load_balancer_sku, null)
       ebpf_data_plane     = try(network_profile.value.ebpf_data_plane, null)
       network_plugin_mode = try(network_profile.value.network_plugin_mode, null)

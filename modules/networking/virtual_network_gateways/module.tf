@@ -59,8 +59,8 @@ resource "azurerm_virtual_network_gateway" "vngw" {
     for_each = can(var.settings.vpn_client_configuration) ? [var.settings.vpn_client_configuration[keys(var.settings.vpn_client_configuration)[0]]] : []
     content {
       address_space        = vpn_client_configuration.value.address_space
-      vpn_auth_types       = try(vpn_client_configuration.value.vpn_auth_types, null)
-      vpn_client_protocols = try(vpn_client_configuration.value.vpn_client_protocols, null)
+      vpn_auth_types       = vpn_client_configuration.value.vpn_auth_types
+      vpn_client_protocols = vpn_client_configuration.value.vpn_client_protocols
 
       aad_audience = try(vpn_client_configuration.value.aad_audience, null)
       aad_issuer   = try(vpn_client_configuration.value.aad_issuer, null)

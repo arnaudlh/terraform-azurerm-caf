@@ -124,7 +124,7 @@ resource "azurerm_lb_nat_pool" "nat_pool" {
   loadbalancer_id                = azurerm_lb.lb.id
   name                           = each.value.name
   protocol                       = each.value.protocol
-  frontend_port_start            = each.value.frontend_port_end
+  frontend_port_start            = each.value.frontend_port_start
   frontend_port_end              = each.value.frontend_port_end
   backend_port                   = each.value.backend_port
   frontend_ip_configuration_name = each.value.frontend_ip_configuration_name
