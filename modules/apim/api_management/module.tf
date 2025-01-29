@@ -147,12 +147,12 @@ resource "azurerm_api_management" "apim" {
 
     content {
 
-      enable_backend_ssl30                                = try(security.value.enable_backend_ssl30, null)
-      enable_backend_tls10                                = try(security.value.enable_backend_tls10, null)
-      enable_backend_tls11                                = try(security.value.enable_backend_tls11, null)
-      enable_frontend_ssl30                               = try(security.value.enable_frontend_ssl30, null)
-      enable_frontend_tls10                               = try(security.value.enable_frontend_tls10, null)
-      enable_frontend_tls11                               = try(security.value.enable_frontend_tls11, null)
+      enable_backend_ssl30                                = try(security.value.enable_backend_ssl30, !try(security.value.disable_backend_ssl30, true), null)
+      enable_backend_tls10                                = try(security.value.enable_backend_tls10, !try(security.value.disable_backend_tls10, true), null)
+      enable_backend_tls11                                = try(security.value.enable_backend_tls11, !try(security.value.disable_backend_tls11, true), null)
+      enable_frontend_ssl30                               = try(security.value.enable_frontend_ssl30, !try(security.value.disable_frontend_ssl30, true), null)
+      enable_frontend_tls10                               = try(security.value.enable_frontend_tls10, !try(security.value.disable_frontend_tls10, true), null)
+      enable_frontend_tls11                               = try(security.value.enable_frontend_tls11, !try(security.value.disable_frontend_tls11, true), null)
       tls_ecdhe_ecdsa_with_aes128_cbc_sha_ciphers_enabled = try(security.value.tls_ecdhe_ecdsa_with_aes128_cbc_sha_ciphers_enabled, null)
       tls_ecdhe_ecdsa_with_aes256_cbc_sha_ciphers_enabled = try(security.value.tls_ecdhe_ecdsa_with_aes256_cbc_sha_ciphers_enabled, null)
       tls_ecdhe_rsa_with_aes128_cbc_sha_ciphers_enabled   = try(security.value.tls_ecdhe_rsa_with_aes128_cbc_sha_ciphers_enabled, null)
@@ -163,12 +163,6 @@ resource "azurerm_api_management" "apim" {
       tls_rsa_with_aes256_cbc_sha256_ciphers_enabled      = try(security.value.tls_rsa_with_aes256_cbc_sha256_ciphers_enabled, null)
       tls_rsa_with_aes256_cbc_sha_ciphers_enabled         = try(security.value.tls_rsa_with_aes256_cbc_sha_ciphers_enabled, null)
       triple_des_ciphers_enabled                          = try(security.value.triple_des_ciphers_enabled, security.value.enable_triple_des_ciphers, null)
-      # disable_backend_ssl30                               = try(security.value.disable_backend_ssl30, null)
-      # disable_backend_tls10                               = try(security.value.disable_backend_tls10, null)
-      # disable_backend_tls11                               = try(security.value.disable_backend_tls11, null)
-      # disable_frontend_ssl30                              = try(security.value.disable_frontend_ssl30, null)
-      # disable_frontend_tls10                              = try(security.value.disable_frontend_tls10, null)
-      # disable_frontend_tls11                              = try(security.value.disable_frontend_tls11, null)
     }
   }
   dynamic "sign_in" {
