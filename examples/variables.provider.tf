@@ -63,3 +63,13 @@ variable "provider_azurerm_features_virtual_machine_scale_set" {
     scale_to_zero_before_deletion = true
   }
 }
+
+variable "subscription_id" {
+  description = "Azure subscription Id."
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "Azure tenant Id."
+  type        = string
+}
