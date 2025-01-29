@@ -184,15 +184,18 @@ resource "azurerm_container_group" "acg" {
     }
   }
 
-  # dynamic "diagnostics" {
-  #   for_each = try(var.settings.diagnostics, false) == false ? [] : [1]
+  dynamic "diagnostics" {
+    for_each = try(var.settings.diagnostics, false) == false ? [] : [1]
 
-  #   content {
-  #     log_analytics {
-
-  #     }
-  #   }
-  # }
+    content {
+      log_analytics {
+        workspace_id  = try(var.diagnostics.log_analytics_workspace_id, null)
+        workspace_key = try(var.diagnostics.log_analytics_workspace_key, null)
+        log_type      = try(var.diagnostics.log_type, null)
+        metadata      = try(var.diagnostics.metadata, null)
+      }
+    }
+  }
 
   timeouts {
     create = "2h"
