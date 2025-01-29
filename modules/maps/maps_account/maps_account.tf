@@ -12,6 +12,7 @@ data "azurecaf_name" "map" {
 resource "azurerm_maps_account" "map" {
   name                = data.azurecaf_name.map.result
   resource_group_name = local.resource_group_name
+  location            = local.location
   sku_name            = var.settings.sku_name
   tags                = local.tags
 
