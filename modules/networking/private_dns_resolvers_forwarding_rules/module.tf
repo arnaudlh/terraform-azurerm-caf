@@ -1,4 +1,4 @@
-data "azurecaf_name" "pvtdnsrfr" {
+resource "azurecaf_name" "pvtdnsrfr" {
   name          = var.settings.name
   resource_type = "azurerm_private_dns_resolver_forwarding_rule"
   prefixes      = var.global_settings.prefixes
@@ -11,7 +11,7 @@ data "azurecaf_name" "pvtdnsrfr" {
 
 
 resource "azurerm_private_dns_resolver_forwarding_rule" "pvt_dns_resolver_forwarding_rule" {
-  name                      = data.azurecaf_name.pvtdnsrfr.result
+  name                      = azurecaf_name.pvtdnsrfr.result
   dns_forwarding_ruleset_id = var.dns_forwarding_ruleset_id
   domain_name               = var.settings.domain_name
   enabled                   = try(var.settings.enabled, null)

@@ -1,4 +1,4 @@
-data "azurecaf_name" "pvtdnsr" {
+resource "azurecaf_name" "pvtdnsr" {
   name          = var.settings.name
   resource_type = "azurerm_private_dns_resolver"
   prefixes      = var.global_settings.prefixes
@@ -11,7 +11,7 @@ data "azurecaf_name" "pvtdnsr" {
 
 
 resource "azurerm_private_dns_resolver" "pvt_dns_resolver" {
-  name                = data.azurecaf_name.pvtdnsr.result
+  name                = azurecaf_name.pvtdnsr.result
   resource_group_name = local.resource_group_name
   virtual_network_id  = var.virtual_network_id
   location            = local.location

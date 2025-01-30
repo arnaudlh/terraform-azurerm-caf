@@ -1,7 +1,7 @@
 resource "azurecaf_name" "this_name" {
   name          = var.settings.name
   prefixes      = var.global_settings.prefixes
-  resource_type = "azurerm_consumption_budget_resource_group"
+  resource_type = "general"
   random_length = var.global_settings.random_length
   clean_input   = true
   passthrough   = var.global_settings.passthrough
@@ -29,6 +29,7 @@ resource "azurerm_consumption_budget_resource_group" "this" {
     content {
       operator  = notification.value.operator
       threshold = notification.value.threshold
+      threshold_type = try(notification.value.threshold_type, "Actual")
 
       contact_emails = try(notification.value.contact_emails, [])
       contact_groups = try(notification.value.contact_groups, try(flatten([
@@ -39,6 +40,11 @@ resource "azurerm_consumption_budget_resource_group" "this" {
       contact_roles = try(notification.value.contact_roles, [])
       enabled       = try(notification.value.enabled, true)
     }
+  }
+
+  time_period {
+    start_date = try(var.settings.time_period.start_date, formatdate("YYYY-MM-01'T'00:00:00Z", timestamp()))
+    end_date   = try(var.settings.time_period.end_date, timeadd(formatdate("YYYY-MM-01'T'00:00:00Z", timestamp()), "8760h"))
   }
 
   dynamic "filter" {
