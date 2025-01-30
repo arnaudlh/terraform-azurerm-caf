@@ -1,6 +1,6 @@
 resource "azurecaf_name" "vpn_site" {
   name          = var.settings.name
-  resource_type = "azurerm_vpn_site"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true

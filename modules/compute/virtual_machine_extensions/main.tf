@@ -17,7 +17,7 @@ data "azapi_resource_action" "azurerm_virtual_machine_status" {
   response_export_values = ["statuses"]
 }
 
-data "azurecaf_environment_variable" "token" {
+resource "azurecaf_name" "token" {
   count = can(var.extension.pats_from_env_variable.variable_name) ? 1 : 0
 
   name           = var.extension.pats_from_env_variable.variable_name

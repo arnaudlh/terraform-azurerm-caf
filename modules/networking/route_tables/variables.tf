@@ -7,7 +7,10 @@ variable "location" {
   description = "(Required) Specifies the supported Azure location where to create the resource. Changing this forces a new resource to be created."
   type        = string
 }
-variable "disable_bgp_route_propagation" {}
+variable "settings" {
+  description = "Configuration settings for the route table"
+  default     = {}
+}
 variable "tags" {
   description = "(Required) Map of tags to be applied to the resource"
   type        = map(any)

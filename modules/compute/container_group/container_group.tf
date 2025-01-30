@@ -65,14 +65,7 @@ resource "azurerm_container_group" "acg" {
 
       commands = try(container.value.commands, null)
 
-      dynamic "gpu" {
-        for_each = try(container.value.gpu, null) == null ? [] : [1]
-
-        content {
-          count = gpu.value.count
-          sku   = gpu.value.sku
-        }
-      }
+      # GPU configuration is no longer supported in provider 4.16.0
 
       dynamic "ports" {
         for_each = try(container.value.ports, {})
@@ -189,9 +182,9 @@ resource "azurerm_container_group" "acg" {
 
     content {
       log_analytics {
-        workspace_id  = try(var.diagnostics.log_analytics_workspace_id, null)
-        workspace_key = try(var.diagnostics.log_analytics_workspace_key, null)
-        log_type      = try(var.diagnostics.log_type, null)
+        workspace_id  = try(var.diagnostics.workspace_id, try(var.diagnostics.log_analytics_workspace_id, null))
+        workspace_key = try(var.diagnostics.workspace_key, try(var.diagnostics.log_analytics_workspace_key, null))
+        log_type      = try(var.diagnostics.log_type, "ContainerInsights")
         metadata      = try(var.diagnostics.metadata, null)
       }
     }
