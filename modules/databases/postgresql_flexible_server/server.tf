@@ -1,6 +1,6 @@
 resource "azurecaf_name" "postgresql_flexible_server" {
   name          = var.settings.name
-  resource_type = "azurerm_postgresql_flexible_server"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true

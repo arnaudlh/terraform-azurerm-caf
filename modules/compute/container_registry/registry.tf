@@ -19,26 +19,21 @@ resource "azurerm_container_registry" "acr" {
   public_network_access_enabled = var.public_network_access_enabled
 
   dynamic "network_rule_set" {
-    for_each = try(var.network_rule_set, {})
+    for_each = try(var.network_rule_set, null) != null ? [1] : []
 
     content {
-      default_action = try(network_rule_set.value.default_action, "Allow")
+      default_action = try(var.network_rule_set.default_action, "Allow")
 
       dynamic "ip_rule" {
-        for_each = try(network_rule_set.value.ip_rules, {})
+        for_each = try(var.network_rule_set.ip_rules, {})
 
         content {
           action   = "Allow"
           ip_range = ip_rule.value.ip_range
         }
       }
-      dynamic "virtual_network" {
-        for_each = try(network_rule_set.value.virtual_networks, {})
 
-        content {
-          subnet_id = can(virtual_network.value.subnet_id) ? virtual_network.value.subnet_id : var.vnets[try(virtual_network.value.lz_key, var.client_config.landingzone_key)][virtual_network.value.vnet_key].subnets[virtual_network.value.subnet_key].id
-        }
-      }
+      # Virtual network rules are not supported in the network_rule_set block in provider version 4.16.0
     }
   }
 
@@ -48,6 +43,7 @@ resource "azurerm_container_registry" "acr" {
     content {
       location = var.global_settings.regions[georeplications.key]
       tags     = try(georeplications.value.tags)
+      zone_redundancy_enabled = try(georeplications.value.zone_redundancy_enabled, null)
     }
   }
 }

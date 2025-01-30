@@ -2,7 +2,7 @@ resource "azurecaf_name" "postgresql_flexible_server_firewall_rule" {
   for_each = try(var.settings.postgresql_firewall_rules, {})
 
   name          = each.value.name
-  resource_type = "azurerm_postgresql_flexible_server_firewall_rule"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true

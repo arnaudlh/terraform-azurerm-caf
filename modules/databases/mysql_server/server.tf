@@ -1,32 +1,38 @@
 resource "azurerm_mysql_server" "mysql" {
-
   name                = azurecaf_name.mysql.result
   resource_group_name = local.resource_group_name
   location            = local.location
-  version             = var.settings.version
-  sku_name            = var.settings.sku_name
+  version            = var.settings.version
+  sku_name           = var.settings.sku_name
 
   administrator_login          = var.settings.administrator_login
   administrator_login_password = try(var.settings.administrator_login_password, azurerm_key_vault_secret.mysql_admin_password.0.value)
+  ssl_enforcement_enabled     = try(var.settings.ssl_enforcement_enabled, true)
+  storage_mb                  = try(var.settings.storage_mb, 5120)
+  tags                       = local.tags
 
-  auto_grow_enabled                 = try(var.settings.auto_grow_enabled, true)
-  storage_mb                        = var.settings.storage_mb
-  backup_retention_days             = try(var.settings.backup_retention_days, null)
-  create_mode                       = try(var.settings.create_mode, "Default")
-  creation_source_server_id         = try(var.settings.creation_source_server_id, null)
-  geo_redundant_backup_enabled      = try(var.settings.geo_redundant_backup_enabled, null)
-  infrastructure_encryption_enabled = try(var.settings.infrastructure_encryption_enabled, false)
-  restore_point_in_time             = try(var.settings.restore_point_in_time, null)
-  public_network_access_enabled     = try(var.settings.public_network_access_enabled, true)
-  ssl_enforcement_enabled           = try(var.settings.ssl_enforcement_enabled, true)
-  ssl_minimal_tls_version_enforced  = try(var.settings.ssl_minimal_tls_version_enforced, "TLSEnforcementDisabled")
-  tags                              = local.tags
-
-  dynamic "identity" {
-    for_each = lookup(var.settings, "identity", {}) == {} ? [] : [1]
-
+  dynamic "storage" {
+    for_each = try(var.settings.storage_mb, null) != null ? [1] : []
     content {
-      type = var.settings.identity.type
+      size_gb = var.settings.storage_mb / 1024
+      iops    = try(var.settings.storage.iops, null)
+    }
+  }
+
+  dynamic "high_availability" {
+    for_each = try(var.settings.high_availability, null) != null ? [1] : []
+    content {
+      mode                      = var.settings.high_availability.mode
+      standby_availability_zone = try(var.settings.high_availability.standby_availability_zone, null)
+    }
+  }
+
+  dynamic "maintenance_window" {
+    for_each = try(var.settings.maintenance_window, null) != null ? [1] : []
+    content {
+      day_of_week  = try(var.settings.maintenance_window.day_of_week, 0)
+      start_hour   = try(var.settings.maintenance_window.start_hour, 0)
+      start_minute = try(var.settings.maintenance_window.start_minute, 0)
     }
   }
 
@@ -34,7 +40,7 @@ resource "azurerm_mysql_server" "mysql" {
 
 resource "azurecaf_name" "mysql" {
   name          = var.settings.name
-  resource_type = "azurerm_mysql_server"
+  resource_type = "azurerm_mysql_flexible_server"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true
@@ -78,7 +84,7 @@ resource "azurerm_key_vault_secret" "mysql_admin_login_name" {
   count = try(var.settings.administrator_login_password, null) == null ? 1 : 0
 
   name         = format("%s-login-name", azurecaf_name.mysql.result)
-  value        = format("%s@%s", var.settings.administrator_login, azurerm_mysql_server.mysql.fqdn)
+  value        = format("%s@%s", var.settings.administrator_login, azurerm_mysql_flexible_server.mysql.fqdn)
   key_vault_id = var.keyvault_id
 }
 
@@ -86,16 +92,16 @@ resource "azurerm_key_vault_secret" "mysql_fqdn" {
   count = try(var.settings.administrator_login_password, null) == null ? 1 : 0
 
   name         = format("%s-fqdn", azurecaf_name.mysql.result)
-  value        = azurerm_mysql_server.mysql.fqdn
+  value        = azurerm_mysql_flexible_server.mysql.fqdn
   key_vault_id = var.keyvault_id
 }
 
-resource "azurerm_mysql_active_directory_administrator" "aad_admin" {
+resource "azurerm_mysql_flexible_server_active_directory_administrator" "mysql_administrator" {
   count = try(var.settings.azuread_administrator, null) == null ? 0 : 1
 
-  server_name         = azurerm_mysql_server.mysql.name
-  resource_group_name = local.resource_group_name
-  login               = try(var.settings.azuread_administrator.login_username, var.azuread_groups[var.settings.azuread_administrator.azuread_group_key].name)
-  tenant_id           = try(var.settings.azuread_administrator.tenant_id, var.azuread_groups[var.settings.azuread_administrator.azuread_group_key].tenant_id)
-  object_id           = try(var.settings.azuread_administrator.object_id, var.azuread_groups[var.settings.azuread_administrator.azuread_group_key].id)
+  server_id    = azurerm_mysql_flexible_server.mysql.id
+  identity_id  = try(var.settings.azuread_administrator.identity_id, null)
+  login        = try(var.settings.azuread_administrator.login_username, var.azuread_groups[var.settings.azuread_administrator.azuread_group_key].name)
+  object_id    = try(var.settings.azuread_administrator.object_id, var.azuread_groups[var.settings.azuread_administrator.azuread_group_key].id)
+  tenant_id    = try(var.settings.azuread_administrator.tenant_id, var.azuread_groups[var.settings.azuread_administrator.azuread_group_key].tenant_id)
 }

@@ -28,15 +28,7 @@ resource "azurerm_synapse_workspace" "ws" {
     type = "SystemAssigned"
   }
 
-  dynamic "aad_admin" {
-    for_each = try(var.settings.aad_admin, null) != null ? [var.settings.aad_admin] : []
-
-    content {
-      login     = try(aad_admin.value.login, null)
-      object_id = try(aad_admin.value.object_id, null)
-      tenant_id = try(aad_admin.value.tenant_id, null)
-    }
-  }
+  # AAD admin is now managed through azurerm_synapse_workspace_aad_admin resource
 
   dynamic "azure_devops_repo" {
     for_each = try(var.settings.azure_devops_repo, null) != null ? [var.settings.azure_devops_repo] : []

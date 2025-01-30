@@ -1,6 +1,6 @@
 resource "azurecaf_name" "apim" {
   name          = var.settings.name
-  resource_type = "azurerm_api_management"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true
@@ -125,15 +125,7 @@ resource "azurerm_api_management" "apim" {
     }
   }
   notification_sender_email = try(var.settings.notification_sender_email, null)
-  dynamic "policy" {
-    for_each = try(var.settings.policy, null) != null ? [var.settings.policy] : []
-
-    content {
-
-      xml_content = try(policy.value.xml_content, null)
-      xml_link    = try(policy.value.xml_link, null)
-    }
-  }
+  # Policy configuration is now managed through azurerm_api_management_policy resource
   dynamic "protocols" {
     for_each = try(var.settings.protocols, null) != null ? [var.settings.protocols] : []
 

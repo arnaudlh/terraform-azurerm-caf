@@ -2,7 +2,7 @@ resource "azurecaf_name" "mysql_flexible_firewall_rule" {
   for_each = try(var.settings.mysql_firewall_rules, {})
 
   name          = each.value.name
-  resource_type = "azurerm_mysql_flexible_server_firewall_rule"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true

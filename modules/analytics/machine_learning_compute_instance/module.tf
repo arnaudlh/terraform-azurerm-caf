@@ -1,6 +1,6 @@
 resource "azurecaf_name" "mlci" {
   name          = var.settings.name
-  resource_type = "azurerm_machine_learning_compute_instance"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true
@@ -11,7 +11,7 @@ resource "azurecaf_name" "mlci" {
 resource "azurerm_machine_learning_compute_instance" "mlci" {
   name = azurecaf_name.mlci.result
 
-  location                      = var.location
+  # location is now derived from the workspace_id
   machine_learning_workspace_id = var.remote_objects.machine_learning_workspace_id
   virtual_machine_size          = var.settings.virtual_machine_size
   authorization_type            = try(var.settings.authorization_type, null)

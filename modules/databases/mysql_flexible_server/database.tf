@@ -8,7 +8,7 @@ resource "azurecaf_name" "mysql_flexible_database" {
   for_each = var.settings.mysql_databases
 
   name          = each.value.name
-  resource_type = "azurerm_mysql_flexible_server_database"
+  resource_type = "general"
   prefixes      = var.global_settings.prefixes
   random_length = var.global_settings.random_length
   clean_input   = true
