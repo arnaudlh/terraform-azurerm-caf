@@ -1,4 +1,4 @@
-data "azurecaf_name" "disk" {
+resource "azurecaf_name" "disk" {
   for_each = lookup(var.settings, "data_disks", {})
 
   name          = each.value.name

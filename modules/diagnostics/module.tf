@@ -33,6 +33,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostics" {
     content {
       category = try(enabled_log.value[0], null)
       category_group = try(enabled_log.value[4], null)
+      enabled = true
 
       dynamic "retention_policy" {
         for_each = length(enabled_log.value) > 2 ? [1] : []

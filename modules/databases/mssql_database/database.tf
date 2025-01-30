@@ -32,7 +32,7 @@ resource "azurerm_mssql_database" "mssqldb" {
   storage_account_type                = try(var.settings.storage_account_type, null)
   transparent_data_encryption_enabled = try(var.settings.transparent_data_encryption_enabled, null)
   tags                                = local.tags
-  zone_redundant                      = try(var.settings.zone_redundant, null)
+  zone_redundant                      = try(var.settings.zone_balancing_enabled, try(var.settings.zone_redundant, null))
 
   dynamic "threat_detection_policy" {
     for_each = can(var.settings.threat_detection_policy) ? [var.settings.threat_detection_policy] : []

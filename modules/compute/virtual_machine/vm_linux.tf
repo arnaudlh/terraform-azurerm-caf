@@ -6,7 +6,7 @@ resource "tls_private_key" "ssh" {
 }
 
 # Name of the VM in the Azure Control Plane
-data "azurecaf_name" "linux" {
+resource "azurecaf_name" "linux" {
   for_each = local.os_type == "linux" ? var.settings.virtual_machine_settings : {}
 
   name          = each.value.name
@@ -20,7 +20,7 @@ data "azurecaf_name" "linux" {
 
 
 # Name of the Linux computer name
-data "azurecaf_name" "linux_computer_name" {
+resource "azurecaf_name" "linux_computer_name" {
   depends_on = [azurerm_network_interface.nic, azurerm_network_interface_security_group_association.nic_nsg]
   for_each   = local.os_type == "linux" ? var.settings.virtual_machine_settings : {}
 
@@ -34,7 +34,7 @@ data "azurecaf_name" "linux_computer_name" {
 }
 
 # Name for the OS disk
-data "azurecaf_name" "os_disk_linux" {
+resource "azurecaf_name" "os_disk_linux" {
   for_each = local.os_type == "linux" ? var.settings.virtual_machine_settings : {}
 
   name          = try(each.value.os_disk.name, null)

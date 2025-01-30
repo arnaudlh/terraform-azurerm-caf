@@ -29,7 +29,7 @@ resource "azurerm_app_service_plan" "asp" {
   }
 
   app_service_environment_id = var.app_service_environment_id
-  zone_balancing_enabled     = lookup(var.settings, "zone_balancing_enabled", lookup(var.settings, "zone_redundant", null))
+  zone_balancing_enabled     = try(var.settings.zone_balancing_enabled, try(var.settings.zone_redundant, null))
   tags                       = merge(local.tags, try(var.settings.tags, {}))
 
   timeouts {

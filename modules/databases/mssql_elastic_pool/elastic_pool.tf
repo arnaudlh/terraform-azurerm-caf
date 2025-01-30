@@ -17,7 +17,7 @@ resource "azurerm_mssql_elasticpool" "elasticpool" {
   server_name         = var.server_name
   max_size_gb         = try(var.settings.max_size_gb, null)
   max_size_bytes      = try(var.settings.max_size_bytes, null)
-  zone_redundant      = try(var.settings.zone_redundant, null)
+  zone_redundant      = try(var.settings.zone_balancing_enabled, try(var.settings.zone_redundant, null))
   license_type        = try(var.settings.license_type, null)
   tags                = local.tags
 

@@ -15,7 +15,7 @@ resource "azurerm_app_service_environment_v3" "asev3" {
   internal_load_balancing_mode           = try(var.settings.internal_load_balancing_mode, null)
   allow_new_private_endpoint_connections = try(var.settings.allow_new_private_endpoint_connections, null)
   dedicated_host_count                   = try(var.settings.dedicated_host_count, null)
-  zone_redundant                         = try(var.settings.zone_redundant, null)
+  zone_redundant                         = try(var.settings.zone_balancing_enabled, try(var.settings.zone_redundant, null))
   tags                                   = merge(local.tags, try(var.settings.tags, {}))
 
   dynamic "cluster_setting" {

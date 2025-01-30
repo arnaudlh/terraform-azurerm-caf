@@ -41,7 +41,7 @@ resource "azurerm_cosmosdb_account" "cosmos_account" {
     content {
       location          = try(var.global_settings.regions[geo_location.value.region], geo_location.value.location)
       failover_priority = geo_location.value.failover_priority
-      zone_redundant    = try(geo_location.value.zone_redundant, null)
+      zone_redundant    = try(geo_location.value.zone_balancing_enabled, try(geo_location.value.zone_redundant, null))
     }
   }
 

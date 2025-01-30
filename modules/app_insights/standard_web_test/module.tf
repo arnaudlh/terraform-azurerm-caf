@@ -1,4 +1,4 @@
-data "azurecaf_name" "appiwt" {
+resource "azurecaf_name" "appiwt" {
   name          = var.name
   resource_type = "azurerm_application_insights_web_test"
   prefixes      = var.global_settings.prefixes

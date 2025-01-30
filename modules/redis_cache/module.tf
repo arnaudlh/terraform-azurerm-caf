@@ -20,12 +20,11 @@ resource "azurerm_redis_cache" "redis" {
   sku_name            = var.redis.sku_name
   tags                = merge(local.tags, try(var.tags, null))
 
-  enable_non_ssl_port           = lookup(var.redis, "enable_non_ssl_port", null)
   minimum_tls_version           = lookup(var.redis, "minimum_tls_version", "1.2")
   private_static_ip_address     = lookup(var.redis, "private_static_ip_address", null)
   public_network_access_enabled = lookup(var.redis, "public_network_access_enabled", null)
   shard_count                   = lookup(var.redis, "shard_count", null)
-  replicas_per_primary          = lookup(var.redis, "replicas_per_primary", coalesce(lookup(var.redis, "replicas_per_master", null), lookup(var.redis, "replicas_per_primary", null)))
+  replicas_per_primary         = try(var.redis.replicas_per_primary, try(var.redis.replicas_per_master, null))
   zones                         = lookup(var.redis, "zones", null)
   redis_version                 = lookup(var.redis, "redis_version", null)
   subnet_id                     = try(var.subnet_id, null)
@@ -37,7 +36,6 @@ resource "azurerm_redis_cache" "redis" {
       aof_backup_enabled              = lookup(redis_configuration.value, "aof_backup_enabled", null)
       aof_storage_connection_string_0 = lookup(redis_configuration.value, "aof_storage_connection_string_0", null)
       aof_storage_connection_string_1 = lookup(redis_configuration.value, "aof_storage_connection_string_1", null)
-      enable_authentication           = lookup(redis_configuration.value, "enable_authentication", null)
       maxfragmentationmemory_reserved = lookup(redis_configuration.value, "maxfragmentationmemory_reserved", null)
       maxmemory_delta                 = lookup(redis_configuration.value, "maxmemory_delta", null)
       maxmemory_policy                = lookup(redis_configuration.value, "maxmemory_policy", null)

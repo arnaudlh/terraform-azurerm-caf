@@ -1,5 +1,5 @@
 # naming convention
-data "azurecaf_name" "wps" {
+resource "azurecaf_name" "wps" {
   name          = var.settings.name
   resource_type = "azurerm_web_pubsub"
   prefixes      = var.global_settings.prefixes
