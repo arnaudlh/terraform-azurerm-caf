@@ -33,7 +33,7 @@ jobs:
             --out-file=/tmp/infracost-base.json
 
       - name: Post Infracost comment
-        uses: infracost/actions/comment@v2
+        uses: infracost/actions/add-comment@v2
         with:
           path: /tmp/infracost-base.json
           behavior: update
