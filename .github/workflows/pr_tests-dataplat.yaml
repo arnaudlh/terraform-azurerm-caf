@@ -76,18 +76,24 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Configure Terraform plugin cache
+      - name: Configure caching
         run: |
           echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
           mkdir --parents "$HOME/.terraform.d/plugin-cache"
+          mkdir --parents "$HOME/.terraform/tmp"
+          mkdir --parents "$HOME/.terraform/examples"
 
       - name: Cache Terraform
         uses: actions/cache@v4
         with:
           path: |
             ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+            ~/.terraform/tmp
+            ~/.terraform/examples
+            examples/.terraform
+          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl', 'examples/**/*.tf') }}
           restore-keys: |
+            ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
             ${{ runner.os }}-terraform-
 
       - name: Terraform Init example
