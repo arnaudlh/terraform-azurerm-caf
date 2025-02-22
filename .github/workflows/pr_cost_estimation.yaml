@@ -1,0 +1,40 @@
+name: PR Cost Estimation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  TF_VERSION: "1.8.4"
+
+jobs:
+  cost-estimation:
+    name: Infracost
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TF_VERSION }}
+
+      - name: Setup Infracost
+        uses: infracost/actions/setup@v3
+        with:
+          api-key: ${{ secrets.INFRACOST_API_KEY }}
+
+      - name: Generate Infracost cost estimate baseline
+        run: |
+          infracost breakdown --path=examples \
+            --format=json \
+            --out-file=/tmp/infracost-base.json
+
+      - name: Post Infracost comment
+        uses: infracost/actions/comment@v3
+        with:
+          path: /tmp/infracost-base.json
+          behavior: update
+          show-all-resources: true
