@@ -65,7 +65,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           file: .
-          args: --severity-threshold=high
+          args: --severity-threshold=high --sarif-file-output=snyk.sarif
 
       - name: Upload Snyk scan results
         uses: github/codeql-action/upload-sarif@v3
