@@ -11,6 +11,7 @@ jobs:
   cost-estimation:
     name: Infracost
     runs-on: ubuntu-latest
+    if: github.event.pull_request.head.repo.full_name == github.repository
     
     steps:
       - name: Checkout
@@ -33,7 +34,7 @@ jobs:
             --out-file=/tmp/infracost-base.json
 
       - name: Post Infracost comment
-        uses: infracost/actions/comment@v3
+        uses: infracost/actions/add-comment@v3
         with:
           path: /tmp/infracost-base.json
           behavior: update
