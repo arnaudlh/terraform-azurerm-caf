@@ -96,6 +96,12 @@ jobs:
           terraform -chdir=examples \
           init
 
+      - name: Terraform Validate
+        id: tf_validate
+        run: |
+          terraform -chdir=examples \
+          validate
+
       - name: Terraform Test example
         id: tf_test
         run: |
