@@ -88,9 +88,9 @@ jobs:
         with:
           path: |
             ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-plugins-${{ hashFiles('**/.terraform.lock.hcl') }}
+          key: ${{ runner.os }}-terraform-plugins-${{ github.workflow }}-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: |
-            ${{ runner.os }}-terraform-plugins-
+            ${{ runner.os }}-terraform-plugins-${{ github.workflow }}-
 
       - name: Terraform Init example
         id: tf_init
