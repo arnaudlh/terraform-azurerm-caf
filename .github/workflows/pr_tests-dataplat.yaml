@@ -47,7 +47,11 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix: ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
+      max-parallel: 4
+      matrix: 
+        include:
+          - ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
+          - test_group: [unit, integration]
 
     steps:
       - name: Checkout
@@ -72,25 +76,33 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      - name: Configure Terraform plugin cache
+      - name: Configure caching
         run: |
           echo "TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache" >>"$GITHUB_ENV"
           mkdir --parents "$HOME/.terraform.d/plugin-cache"
+          mkdir --parents "$HOME/.terraform/tmp"
+          mkdir --parents "$HOME/.terraform/examples"
 
       - name: Cache Terraform
         uses: actions/cache@v4
         with:
           path: |
             ~/.terraform.d/plugin-cache
-          key: ${{ runner.os }}-terraform-${{ hashFiles('**/.terraform.lock.hcl') }}
+          key: ${{ runner.os }}-terraform-plugins-${{ github.workflow }}-${{ hashFiles('**/.terraform.lock.hcl') }}
           restore-keys: |
-            ${{ runner.os }}-terraform-
+            ${{ runner.os }}-terraform-plugins-${{ github.workflow }}-
 
       - name: Terraform Init example
         id: tf_init
         run: |
           terraform -chdir=examples \
           init
+
+      - name: Terraform Validate
+        id: tf_validate
+        run: |
+          terraform -chdir=examples \
+          validate
 
       - name: Terraform Test example
         id: tf_test

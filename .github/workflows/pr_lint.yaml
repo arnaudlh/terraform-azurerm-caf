@@ -3,7 +3,7 @@
 # Licensed under the MIT License.
 #
 
-name: PR Tflint
+name: PR Lint and Security
 
 on:
   workflow_dispatch:
@@ -13,6 +13,7 @@ on:
 env:
   TF_VERSION: "1.8.4"
   TF_LINT_VERSION: "v0.50.3"
+  CHECKOV_VERSION: "3.2.18"
 
 jobs:
   linting:
@@ -44,3 +45,38 @@ jobs:
           reporter: github-pr-check
           level: info
           tflint_init: true
+
+      - name: Run Checkov scan
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: .
+          framework: terraform
+          output_format: github_failed_only
+          download_external_modules: true
+          soft_fail: true
+          skip_check: CKV_AWS_*,CKV_GCP_*,CKV_DOCKER_*
+          baseline: .checkov.baseline
+
+      - name: Post Checkov PR Comments
+        uses: reviewdog/action-suggester@v1
+        if: github.event_name == 'pull_request'
+        with:
+          tool_name: checkov
+          fail_on_error: false
+          filter_mode: nofilter
+          reporter: github-pr-review
+          level: warning
+
+      - name: Run Snyk Infrastructure as Code Test
+        uses: snyk/actions/iac@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+          sarif: true
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk.sarif

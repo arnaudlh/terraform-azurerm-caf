@@ -1,0 +1,18 @@
+{
+  "failed_checks": [],
+  "passed_checks": [],
+  "skipped_checks": [
+    {
+      "id": "CKV_AWS_*",
+      "suppress_comment": "AWS checks not relevant for Azure resources"
+    },
+    {
+      "id": "CKV_GCP_*",
+      "suppress_comment": "GCP checks not relevant for Azure resources"
+    },
+    {
+      "id": "CKV_DOCKER_*",
+      "suppress_comment": "Docker checks not relevant for Terraform configurations"
+    }
+  ]
+}
