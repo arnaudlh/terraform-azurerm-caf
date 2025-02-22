@@ -22,7 +22,7 @@ jobs:
           terraform_version: ${{ env.TF_VERSION }}
 
       - name: Setup Infracost
-        uses: infracost/actions/setup@v3
+        uses: infracost/actions/setup@v3.0.0
         with:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
@@ -33,7 +33,7 @@ jobs:
             --out-file=/tmp/infracost-base.json
 
       - name: Post Infracost comment
-        uses: infracost/actions/comment@v3
+        uses: infracost/actions/comment@v3.0.0
         with:
           path: /tmp/infracost-base.json
           behavior: update
