@@ -32,6 +32,8 @@ jobs:
           api-key: ${{ secrets.INFRACOST_API_KEY }}
 
       - name: Generate Infracost cost estimate baseline
+        env:
+          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
         run: |
           infracost breakdown --path=examples \
                             --format=json \
@@ -41,6 +43,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Generate Infracost diff
+        env:
+          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
         run: |
           infracost diff --path=examples \
                         --format=json \
@@ -48,6 +52,8 @@ jobs:
                         --out-file=/tmp/infracost.json
 
       - name: Post Infracost comment
+        env:
+          INFRACOST_API_KEY: ${{ secrets.INFRACOST_API_KEY }}
         run: |
           infracost comment github --path=/tmp/infracost.json \
                                  --repo=$GITHUB_REPOSITORY \
