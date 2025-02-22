@@ -1,6 +1,20 @@
 # Cloud Adoption Framework for Azure - Terraform module
 
-> :warning: This solution, offered by the Open-Source community, will no longer receive contributions from Microsoft. Customers are encouraged to transition to [Microsoft Azure Verified Modules](https://aka.ms/avm) for Microsoft support and updates.
+> ⚠️ **IMPORTANT TRANSITION NOTICE**
+> 
+> This solution is no longer maintained by Microsoft and will not receive further updates or security patches. Users are strongly encouraged to migrate to [Microsoft Azure Verified Modules (AVM)](https://aka.ms/avm) for continued support and updates.
+>
+> **Migration Timeline:**
+> - Current Status: Community Maintenance Only
+> - Recommended Action: Plan migration to AVM
+> - Support: Limited to community contributions
+>
+> **Migration Steps:**
+> 1. Review your current CAF module usage
+> 2. Identify equivalent AVM modules for your resources
+> 3. Follow the [AVM Migration Guide](https://aka.ms/avm)
+> 4. Test thoroughly in non-production environment
+> 5. Plan production migration with minimal downtime
 
 This module allows you to create resources on Microsoft Azure, is used by the Azure Terraform SRE to provision resources in an Azure subscription and can deploy resources being directly invoked from the Terraform registry.
 
@@ -35,7 +49,7 @@ You can also reach us on [Gitter](https://gitter.im/aztfmod/community?utm_source
 
 ## Contributing
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
+This project welcomes contributions and suggestions. Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>.
 
