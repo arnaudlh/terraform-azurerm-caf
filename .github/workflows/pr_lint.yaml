@@ -66,3 +66,17 @@ jobs:
           filter_mode: nofilter
           reporter: github-pr-review
           level: warning
+
+      - name: Run Snyk Infrastructure as Code Test
+        uses: snyk/actions/iac@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
+          sarif: true
+
+      - name: Upload SARIF file
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: snyk.sarif
