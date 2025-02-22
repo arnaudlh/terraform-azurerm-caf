@@ -47,7 +47,11 @@ jobs:
 
     strategy:
       fail-fast: false
-      matrix: ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
+      max-parallel: 4
+      matrix: 
+        include:
+          - ${{fromJSON(needs.load_scenarios.outputs.matrix)}}
+          - test_group: [unit, integration]
 
     steps:
       - name: Checkout
