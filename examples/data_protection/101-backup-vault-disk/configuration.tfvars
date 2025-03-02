@@ -26,6 +26,28 @@ backup_vaults = {
   }
 }
 
+disk_encryption_sets = {
+  set1 = {
+    name               = "des-example"
+    resource_group_key = "bv"
+    region             = "region1"
+    keyvault = {
+      key = "example_vm_rg1"
+    }
+    key_vault_key_key = "des_example"
+  }
+}
+
+keyvault_keys = {
+  des_example = {
+    keyvault_key = "example_vm_rg1"
+    name         = "des-example"
+    key_type     = "RSA"
+    key_size     = 2048
+    key_opts     = ["decrypt", "encrypt", "sign", "unwrapKey", "verify", "wrapKey"]
+  }
+}
+
 role_mapping = {
   built_in_role_mapping = {
     resource_groups = {
