@@ -1,9 +1,9 @@
 mock_provider "azurerm" {
-  source = "../../../mock_data"
+  source = "../../mock_data"
 }
 
 mock_provider "azuread" {
-  source = "../../../mock_data"
+  source = "../../mock_data"
 }
 
 # Test storage account creation
