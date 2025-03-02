@@ -306,3 +306,44 @@ New modules must implement the automation of integration testing using GitHub ac
 
 [Back to summary](../README.md)
 
+# Documentation Standards
+
+## Module Documentation
+
+Each module should include comprehensive documentation in the form of a README.md file. The README.md should include:
+
+1. **Overview**: A brief description of the module and its purpose
+2. **Example scenarios**: Links to examples demonstrating the module's usage
+3. **Reference parameters**: Documentation of all input and output variables
+4. **Settings details**: Detailed explanation of the settings object structure
+5. **Run this example**: Instructions for running the example with both Terraform and rover
+
+## Example Documentation
+
+Each example should include a README.md file that explains:
+
+1. **Purpose**: What the example demonstrates
+2. **Prerequisites**: Any requirements for running the example
+3. **Usage**: How to use the example
+4. **Expected outcome**: What resources will be created
+5. **Testing**: How to test the example using mock providers
+
+## Documentation Format
+
+All documentation should follow a consistent format:
+
+1. Use Markdown for all documentation files
+2. Use heading levels appropriately (# for title, ## for sections, ### for subsections)
+3. Include code blocks with appropriate language tags (```hcl for Terraform code)
+4. Use tables for structured information
+5. Include links to related documentation where appropriate
+
+## Documentation Maintenance
+
+Documentation should be kept up-to-date with the code:
+
+1. Update documentation when making changes to the code
+2. Ensure examples are working with the latest version of the module
+3. Remove outdated information
+4. Add documentation for new features
+
