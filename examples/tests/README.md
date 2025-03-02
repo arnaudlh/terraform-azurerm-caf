@@ -2,6 +2,8 @@
 
 This README provides an example on how to use locally Terraform test commands.
 
+For comprehensive documentation on testing with mock providers, please refer to the [Testing with Mock Providers](../../documentation/testing_with_mock_providers.md) guide.
+
 ## Running Tests
 
 To run tests in Terraform, you can use the following command:

@@ -27,6 +27,10 @@ For a complete set of examples you can review the [full library here](https://gi
 
 <img src="https://aztfmod.azureedge.net/media/standalone.gif" width="720"/> <br/> <br/>
 
+## Testing
+
+For information on testing with mock providers, please refer to the [Testing with Mock Providers](./documentation/testing_with_mock_providers.md) guide.
+
 ## Community
 
 Feel free to open an issue for feature or bug, or to submit a PR, [Please check out the WIKI for coding standards, common patterns and PR checklist.](https://github.com/aztfmod/terraform-azurerm-caf/wiki)
