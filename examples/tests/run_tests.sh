@@ -82,19 +82,19 @@ fi
 case $TEST_TYPE in
   all)
     echo "Running all tests..."
-    terraform -chdir=./examples test -test-directory=$TEST_DIR $VERBOSE_FLAG $FILTER_FLAG
+    terraform test -test-directory=$TEST_DIR $VERBOSE_FLAG $FILTER_FLAG
     ;;
   component)
     echo "Running component tests..."
-    terraform -chdir=./examples test -test-directory=$TEST_DIR/component_tests $VERBOSE_FLAG $FILTER_FLAG
+    terraform test -test-directory=$TEST_DIR/component_tests $VERBOSE_FLAG $FILTER_FLAG
     ;;
   integration)
     echo "Running integration tests..."
-    terraform -chdir=./examples test -test-directory=$TEST_DIR/integration_tests $VERBOSE_FLAG $FILTER_FLAG
+    terraform test -test-directory=$TEST_DIR/integration_tests $VERBOSE_FLAG $FILTER_FLAG
     ;;
   validation)
     echo "Running validation tests..."
-    terraform -chdir=./examples test -test-directory=$TEST_DIR/validation_tests $VERBOSE_FLAG $FILTER_FLAG
+    terraform test -test-directory=$TEST_DIR/validation_tests $VERBOSE_FLAG $FILTER_FLAG
     ;;
   *)
     echo "Unknown test type: $TEST_TYPE"
