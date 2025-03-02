@@ -450,3 +450,33 @@ variable "load_test" {
   default     = {}
 }
 
+variable "provider_azurerm_features_keyvault" {
+  description = "Configuration settings for the keyvault feature of the AzureRM provider"
+  type = object({
+    purge_soft_delete_on_destroy               = optional(bool, true)
+    purge_soft_deleted_certificates_on_destroy = optional(bool, false)
+    purge_soft_deleted_keys_on_destroy         = optional(bool, false)
+    purge_soft_deleted_secrets_on_destroy      = optional(bool, false)
+    recover_soft_deleted_certificates          = optional(bool, true)
+    recover_soft_deleted_key_vaults            = optional(bool, true)
+    recover_soft_deleted_keys                  = optional(bool, true)
+    recover_soft_deleted_secrets               = optional(bool, true)
+  })
+  default = {
+    purge_soft_delete_on_destroy               = true
+    purge_soft_deleted_certificates_on_destroy = false
+    purge_soft_deleted_keys_on_destroy         = false
+    purge_soft_deleted_secrets_on_destroy      = false
+    recover_soft_deleted_certificates          = true
+    recover_soft_deleted_key_vaults            = true
+    recover_soft_deleted_keys                  = true
+    recover_soft_deleted_secrets               = true
+  }
+}
+
+variable "keyvault_keys" {
+  description = "Key Vault keys configuration objects"
+  type        = map(any)
+  default     = {}
+}
+

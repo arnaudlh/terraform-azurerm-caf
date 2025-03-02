@@ -140,7 +140,6 @@ module "example" {
     cosmosdb_role_definitions          = var.cosmosdb_role_definitions
     databricks_workspaces              = var.databricks_workspaces
     database_migration_services        = var.database_migration_services
-    databricks_workspaces              = var.databricks_workspaces
     databricks_access_connectors       = var.databricks_access_connectors
     machine_learning_workspaces        = var.machine_learning_workspaces
     mariadb_servers                    = var.mariadb_servers
